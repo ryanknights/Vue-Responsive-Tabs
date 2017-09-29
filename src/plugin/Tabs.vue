@@ -2,8 +2,8 @@
   <div class="tabs__container">
 		<nav class="tabs__navigation">
 			<ul class="tabs__navigation__list">
-				<li v-for="(tab, index) in tabs" :class="{'is-active': tab.isActive}">
-					<a :href="tab.href" @click="selectTab(tab, $event)">{{ tab.name }}</a>
+				<li v-for="(tab, index) in tabs" :class="{'is-active': tab.isActive}" :index="index">
+					<a @click="onSelect(index, $event)">{{ tab.name }}</a>
 				</li>
 			</ul>
 		</nav>
@@ -22,18 +22,50 @@ export default {
   },
   data () {
   	return {
-  		tabs: []
+  		tabs: [],
+  		activeTab: false
   	}
   },
   created () {
   	this.tabs = this.$children;
   },
+  mounted () { 
+  	this.$tabs.bus.$on('open', (componentName, index) => {
+  		if (this.name !== componentName) {
+  			return;
+  		}
+
+  		this.onSelect(index);
+  	});
+  },
   methods : {
-  	selectTab (selectedTab) {
-  		this.$emit('selectTab');
+  	onSelect (selectedIndex) {
+  		if (this.tabs[selectedIndex] === 'undefined') {
+  			return;
+  		}
+
+  		const selectedTab = this.tabs[selectedIndex];
+
+  		if (selectedTab.isActive) {
+  			return;
+  		}
+
+  		this.emitBeforeChange(selectedTab, selectedIndex);
+  		this.changeToTab(selectedTab);
+  		this.emitAfterChange(selectedTab, selectedIndex);
+  	},
+  	emitBeforeChange (tab, index) {
+  		this.$emit('beforeChange', this, tab, index);
+  		this.$tabs.bus.$emit('beforeChange', this, tab, index);
+  	},
+  	emitAfterChange (tab, index) {
+  		this.$emit('afterChange', this, tab, index);
+  		this.$tabs.bus.$emit('afterChange', this, tab, index);
+  	},
+  	changeToTab(toTab) {
   		this.tabs.forEach(tab => {
-  			tab.isActive = (tab.href == selectedTab.href);
-  		});
+  			tab.isActive = (tab.href == toTab.href);
+  		});  		
   	}
   }
 }

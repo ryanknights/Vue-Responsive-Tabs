@@ -1,10 +1,8 @@
 <template>
-  <div class="tabs__tab">
-  	<a 
-  		:href="href" 
+  <div class="tabs__tab" :class="{'is-active': isActive}">
+  	<a
   		class="tabs__tab__accordion-title" 
-  		@click="selectAccordion($event)" 
-  		:class="{'is-active': isActive}"
+      @click="selectAccordion($event)" 
   	>
   		{{ name }}
   	</a>

@@ -11,8 +11,8 @@ const Plugin = {
 
 		Vue.prototype.$tabs = {
 			bus: new Vue(),
-			show (name, params) {
-				this.bus.$emit('show', name, params);
+			open (name, params) {
+				this.bus.$emit('open', name, params);
 			}
 		}
 
