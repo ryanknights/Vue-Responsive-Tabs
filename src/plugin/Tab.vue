@@ -35,7 +35,7 @@ export default {
   },
   methods: {
   	selectAccordion ($event) {
-  		this.$parent.selectTab(this, $event);
+  		this.$parent.onSelect(this.index, $event);
   	}
   }
 }

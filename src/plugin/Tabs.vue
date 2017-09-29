@@ -30,6 +30,8 @@ export default {
   	this.tabs = this.$children;
   },
   mounted () { 
+  	this.tabs.forEach((tab, index) => tab.index = index);
+
   	this.$tabs.bus.$on('open', (componentName, index) => {
   		if (this.name !== componentName) {
   			return;
