@@ -50,12 +50,19 @@ export default {
   mounted () { 
   	if (this.isResponsive) {
   		this.currentType = this.findType(); 
-  		window.addEventListener('resize', _.throttle(this.checkType), 200);
+
+  		this.resizeListener = _.throttle(this.checkType.bind(this), 200);
+  		window.addEventListener('resize', this.resizeListener);
   	}
   	 	
   	this.updateTabIndexes();
   	this.$tabs.bus.$on('open', this.onApiOpen);
   	this.$tabs.bus.$on('switchType', this.onApiSwitchType);
+  },
+  beforeDestroy () {
+  	if (this.isResponsive) {
+  		window.removeEventListener('resize', this.resizeListener);
+  	}
   },
   methods : {
   	onSelect (selectedIndex) {
