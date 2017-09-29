@@ -23,7 +23,9 @@ export default {
   	name: { default: false },
   	responsive: { default: true, type: Boolean },
   	type: { default: 'tabs', type: String},
-  	breakpoint: { default: 768, type: [String, Number] }
+  	breakpoint: { default: 768, type: [String, Number] },
+  	collapsible: { default: true },
+  	keepOpen: { default: true }
   },
   data () {
   	return {
@@ -72,7 +74,7 @@ export default {
 
   		const selectedTab = this.tabs[selectedIndex];
 
-  		if (selectedTab.isActive) {
+  		if ((this.currentType === 'tabs' && selectedTab.isActive) || (this.currentType === 'accordion' && selectedTab.isActive && !this.collapsible)) {
   			return;
   		}
 
@@ -98,9 +100,15 @@ export default {
 	  			tab.isActive = (tab.href == toTab.href);
 	  		});  
   		} else if (this.currentType === 'accordion') {
-	  		this.tabs.forEach(tab => {
-	  			tab.isActive = (tab.href == toTab.href);
-	  		}); 
+  			if (toTab.isActive && this.collapsible) {
+  				toTab.isActive = false;
+  			} else if (this.keepOpen) {
+  				toTab.isActive = true;
+  			} else {
+		  		this.tabs.forEach(tab => {
+		  			tab.isActive = (tab.href == toTab.href);
+		  		});   				
+  			}
   		}		
   	},
   	checkType () {
@@ -114,11 +122,21 @@ export default {
   		this.typeChanged(oldType, newType);
   	},
   	typeChanged (oldType, newType) {
-  		switch (newType) {
-  			case 'tabs':
+  		this.currentType = newType;
 
+  		switch (newType) {
+  			/*----------  Accordion to Tabs  ----------*/
+  			case 'tabs':
+  				// User closed all accordion panels then switched to tabs, need to reopen something if this occurs?!
+  				if (this.tabs.every(tab => !tab.isActive)) { 
+  					this.onSelect(0);
+  				}
+  				if (this.tabs.map(tab => tab.isActive).length > 1) {
+  					this.change(this.tabs[0]);
+  				}
   			break;
 
+  			/*----------  Tabs to Accordion  ----------*/
   			case 'accordion':
 
   			break;
@@ -126,7 +144,7 @@ export default {
   			default: 
   			break;
   		}
-  		this.currentType = newType;
+  		
   		this.emitTypeChange(oldType, newType);
   	},
   	findType () {
