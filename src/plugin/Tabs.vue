@@ -15,7 +15,7 @@
 
 <script>
 
-import _ from 'lodash'
+import throttle from 'lodash.throttle'
 
 export default {
   name: 'tabs',
@@ -24,8 +24,8 @@ export default {
   	responsive: { default: true, type: Boolean },
   	type: { default: 'tabs', type: String},
   	breakpoint: { default: 768, type: [String, Number] },
-  	collapsible: { default: true },
-  	keepOpen: { default: true }
+  	collapsible: { default: false },
+  	keepOpen: { default: false }
   },
   data () {
   	return {
@@ -53,7 +53,7 @@ export default {
   	if (this.isResponsive) {
   		this.currentType = this.findType(); 
 
-  		this.resizeListener = _.throttle(this.checkType.bind(this), 200);
+  		this.resizeListener = throttle(this.checkType.bind(this), 200);
   		window.addEventListener('resize', this.resizeListener);
   	}
   	 	
@@ -131,7 +131,9 @@ export default {
   				if (this.tabs.every(tab => !tab.isActive)) { 
   					this.onSelect(0);
   				}
-  				if (this.tabs.map(tab => tab.isActive).length > 1) {
+
+  				// User has keep open on and has multiple panels open, now switches back to tabs. Reopen first tab.
+  				if (this.tabs.filter(tab => tab.isActive).length > 1) {
   					this.change(this.tabs[0]);
   				}
   			break;
@@ -171,9 +173,19 @@ export default {
 }
 </script>
 
-<style>
+<style lang="less">
 	.tabs__container {
+		&--tabs {
+			.tabs__tab__accordion-title {
+				display : none;
+			}
+		}
 
+		&--accordion {
+			.tabs__navigation {
+				display : none;
+			}
+		}
 	}
 
 	.tabs__navigation {
@@ -182,28 +194,25 @@ export default {
 
 	.tabs__navigation__list {
 		list-style : none;
-		padding : 0;
-	}
+		padding    : 0;
 
-	.tabs__navigation__list li {
-		float : left;
-	}
+		li {
+			float : left;
+		}
 
-	.tabs__navigation__list li.is-active a {
-		font-size : 20px;
-	}	
+		li.is-active a {
+			font-size : 20px;
+		}
 
-	.tabs__navigation__list li a {
-		display : block;
-		padding : 8px;
-		border  : 1px solid #ccc;
+		a {
+			display : block;
+			padding : 8px;
+			border  : 1px solid #ccc;
+		}
 	}
 
 	.tabs__content {
 		clear : both;
 	}
 
-	.tabs__container.tabs__container--accordion .tabs__navigation {
-		display: none;
-	}
 </style>

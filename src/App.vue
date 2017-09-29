@@ -47,7 +47,7 @@
     <br />
     <button @click="switchType('tabs2', 'tabs')">Tabs</button>
     <button @click="switchType('tabs2', 'accordion')">Accordion</button>    
-    <tabs name="tabs2" @beforeChange="componentBeforeChange" @afterChange="componentAfterChange" @typeChange="componentTypeChange" type="accordion" :responsive=false :collapsible=true :keepOpen=true>    
+    <tabs name="tabs2" @beforeChange="componentBeforeChange" @afterChange="componentAfterChange" @typeChange="componentTypeChange" type="accordion" :responsive=false :collapsible=false :keepOpen=false>    
       <tab name="Tab 1" :selected="true">
         <h1>Tab 1</h1>
         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptate ducimus culpa asperiores nihil quia atque cumque enim ea fugit error, qui consectetur eligendi nam ipsa ipsum voluptatibus voluptates magni sequi?</p>

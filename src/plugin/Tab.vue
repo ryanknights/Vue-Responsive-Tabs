@@ -41,7 +41,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="less">
 
 	.tabs__tab__content {
 		padding : 20px;
@@ -51,9 +51,5 @@ export default {
 	.tabs__tab__accordion-title.is-active {
 		font-size : 20px;
 	}
-
-  .tabs__container.tabs__container--tabs .tabs__tab__accordion-title {
-    display : none;
-  } 
   
 </style>
