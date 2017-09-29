@@ -3,7 +3,10 @@
 		<nav class="tabs__navigation">
 			<ul class="tabs__navigation__list">
 				<li v-for="(tab, index) in tabs" :class="{'is-active': tab.isActive}" :index="index">
-					<a @click="onSelect(index, $event)">{{ tab.name }}</a>
+					<a @click="onSelect(index, $event)">
+						<span :class="['tabs__navigation__icon', `tabs__navigation__icon--${tab.icon}`]" v-show="tab.icon"></span>
+						{{ tab.name }}
+					</a>
 				</li>
 			</ul>
 		</nav>
@@ -209,6 +212,13 @@ export default {
 			padding : 8px;
 			border  : 1px solid #ccc;
 		}
+	}
+
+	.tabs__navigation__icon {
+		width : 10px;
+		height : 10px;
+		display : inline-block;
+		background : blue;
 	}
 
 	.tabs__content {

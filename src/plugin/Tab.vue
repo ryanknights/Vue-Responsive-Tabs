@@ -4,10 +4,13 @@
   		class="tabs__tab__accordion-title" 
       @click="selectAccordion($event)" 
   	>
+      <span :class="['tabs__navigation__icon', `tabs__navigation__icon--${icon}`]" v-show="icon"></span>
   		{{ name }}
   	</a>
   	<div class="tabs__tab__content" v-show="isActive">
+      <slot name="header" />
   		<slot />
+      <slot name="footer" />
   	</div>
   </div>
 </template>
@@ -18,7 +21,8 @@ export default {
   name: 'tab',
   props: {
   	name: { required: true },
-  	selected: { default: false }
+  	selected: { default: false },
+    icon: { default: false }
   },
   data () {
   	return {

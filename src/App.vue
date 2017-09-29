@@ -18,9 +18,10 @@
     <button @click="switchTab('tabs1', 1)">Open Tab 2</button>
     <button @click="switchTab('tabs1', 2)">Open Tab 3</button>
     <tabs name="tabs1" @beforeChange="componentBeforeChange" @afterChange="componentAfterChange" @typeChange="componentTypeChange" :breakpoint=breakpoint>
-      <tab name="Tab 1" :selected="true">
-        <h1>Tab 1</h1>
+      <tab name="Tab 1" :selected="true" icon="something">
+        <h1 slot="header">Header Tab 1</h1>
         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptate ducimus culpa asperiores nihil quia atque cumque enim ea fugit error, qui consectetur eligendi nam ipsa ipsum voluptatibus voluptates magni sequi?</p>
+        <h1 slot="footer">Footer Tab 1</h1>
       </tab>
       <tab name="Tab 2">
         <h1>Tab 2</h1>
@@ -28,7 +29,7 @@
       </tab> 
       <tab name="Tab 3">
         <h1>Tab 3</h1>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptate ducimus culpa asperiores nihil quia atque cumque enim ea fugit error, qui consectetur eligendi nam ipsa ipsum voluptatibus voluptates magni sequi?</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptate ducimus culpa asperiores nihil quia atque cumque enim ea fugit error, qui consectetur eligendi nam ipsa ipsum voluptatibus voluptates magni sequi?</p>       
       </tab>           
     </tabs>
     <hr />
