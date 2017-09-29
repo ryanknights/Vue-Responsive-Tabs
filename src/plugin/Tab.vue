@@ -52,9 +52,8 @@ export default {
 		font-size : 20px;
 	}
 
-	@media only screen and (min-width: 768px) {
-		.tabs__tab__accordion-title {
-			display : none;
-		}		
-	}
+  .tabs__container.tabs__container--tabs .tabs__tab__accordion-title {
+    display : none;
+  } 
+  
 </style>

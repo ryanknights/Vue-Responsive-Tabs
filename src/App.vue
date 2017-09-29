@@ -9,10 +9,15 @@
       <strong>$tabs EventBus</strong><br />
       Tabs 1 selected index is {{ tabs1EventBusSelectedIndex }}
     </p>
+    <p>
+      <strong>Breakpoint(px)</strong>
+      <input type="number" v-model="breakpoint">
+      {{ breakpoint }}
+    </p>
     <button @click="switchTab('tabs1', 0)">Open Tab 1</button>
     <button @click="switchTab('tabs1', 1)">Open Tab 2</button>
     <button @click="switchTab('tabs1', 2)">Open Tab 3</button>
-    <tabs name="tabs1" @beforeChange="componentBeforeChange" @afterChange="componentAfterChange">
+    <tabs name="tabs1" @beforeChange="componentBeforeChange" @afterChange="componentAfterChange" @typeChange="componentTypeChange" :breakpoint=breakpoint>
       <tab name="Tab 1" :selected="true">
         <h1>Tab 1</h1>
         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptate ducimus culpa asperiores nihil quia atque cumque enim ea fugit error, qui consectetur eligendi nam ipsa ipsum voluptatibus voluptates magni sequi?</p>
@@ -38,8 +43,11 @@
     </p>     
     <button @click="switchTab('tabs2', 0)">Open Tab 1</button>
     <button @click="switchTab('tabs2', 1)">Open Tab 2</button>
-    <button @click="switchTab('tabs2', 2)">Open Tab 3</button>      
-    <tabs name="tabs2" @beforeChange="componentBeforeChange" @afterChange="componentAfterChange">    
+    <button @click="switchTab('tabs2', 2)">Open Tab 3</button>
+    <br />
+    <button @click="switchType('tabs2', 'tabs')">Tabs</button>
+    <button @click="switchType('tabs2', 'accordion')">Accordion</button>    
+    <tabs name="tabs2" @beforeChange="componentBeforeChange" @afterChange="componentAfterChange" @typeChange="componentTypeChange" type="accordion" :responsive=false >    
       <tab name="Tab 1" :selected="true">
         <h1>Tab 1</h1>
         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptate ducimus culpa asperiores nihil quia atque cumque enim ea fugit error, qui consectetur eligendi nam ipsa ipsum voluptatibus voluptates magni sequi?</p>
@@ -65,14 +73,15 @@ export default {
       tabs1ComponentSelectedIndex: 0,
       tabs2ComponentSelectedIndex: 0,
       tabs1EventBusSelectedIndex: 0,
-      tabs2EventBusSelectedIndex: 0      
+      tabs2EventBusSelectedIndex: 0,
+      breakpoint: 768
     }
   },
   mounted () {
     this.$tabs.bus.$on('beforeChange', (component, newTab, newTabIndex) => {
-      
+
     });
-    
+
     this.$tabs.bus.$on('afterChange', (component, newTab, newTabIndex) => {
       this[`${component.name}EventBusSelectedIndex`] = newTabIndex;
     });
@@ -81,11 +90,17 @@ export default {
     switchTab (name, index) {
       this.$tabs.open(name, index);
     },
+    switchType (name, type) {
+      this.$tabs.switchType(name, type);
+    },
     componentBeforeChange (component, newTab, newTabIndex) {
       
     },
     componentAfterChange (component, newTab, newTabIndex) {
       this[`${component.name}ComponentSelectedIndex`] = newTabIndex;
+    },
+    componentTypeChange (component, oldType, newType) {
+      console.log(`${component.name} switched from ${oldType} to ${newType}`);
     }
   }
 }

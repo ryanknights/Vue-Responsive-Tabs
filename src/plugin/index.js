@@ -11,8 +11,11 @@ const Plugin = {
 
 		Vue.prototype.$tabs = {
 			bus: new Vue(),
-			open (name, params) {
-				this.bus.$emit('open', name, params);
+			open (name, tabIndex) {
+				this.bus.$emit('open', name, tabIndex);
+			},
+			switchType (name, type) {
+				this.bus.$emit('switchType', name, type);
 			}
 		}
 

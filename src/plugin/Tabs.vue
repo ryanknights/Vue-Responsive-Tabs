@@ -1,5 +1,5 @@
 <template>
-  <div class="tabs__container">
+  <div class="tabs__container" :class="typeClass">
 		<nav class="tabs__navigation">
 			<ul class="tabs__navigation__list">
 				<li v-for="(tab, index) in tabs" :class="{'is-active': tab.isActive}" :index="index">
@@ -15,30 +15,47 @@
 
 <script>
 
+import _ from 'lodash'
+
 export default {
   name: 'tabs',
   props: {
-  	name: { default: false }
+  	name: { default: false },
+  	responsive: { default: true, type: Boolean },
+  	type: { default: 'tabs', type: String},
+  	breakpoint: { default: 768, type: [String, Number] }
   },
   data () {
   	return {
   		tabs: [],
-  		activeTab: false
+  		currentType: this.type,
+  	}
+  },
+  computed: {
+  	typeClass () {
+  		return `tabs__container--${this.currentType}`;
+  	},
+  	isResponsive () {
+  		return !!this.responsive;
+  	}
+  },
+  watch: {
+  	breakpoint (newValue, oldValue) {
+  		this.checkType();
   	}
   },
   created () {
   	this.tabs = this.$children;
   },
   mounted () { 
-  	this.tabs.forEach((tab, index) => tab.index = index);
-
-  	this.$tabs.bus.$on('open', (componentName, index) => {
-  		if (this.name !== componentName) {
-  			return;
-  		}
-
-  		this.onSelect(index);
-  	});
+  	if (this.isResponsive) {
+  		this.currentType = this.findType(); 
+  		window.addEventListener('resize', _.throttle(this.checkType), 200);
+  	}
+  	 	
+  	this.updateTabIndexes();
+  	this.$tabs.bus.$on('open', this.onApiOpen);
+  	this.$tabs.bus.$on('switchType', this.onApiSwitchType);
   },
   methods : {
   	onSelect (selectedIndex) {
@@ -53,7 +70,7 @@ export default {
   		}
 
   		this.emitBeforeChange(selectedTab, selectedIndex);
-  		this.changeToTab(selectedTab);
+  		this.change(selectedTab);
   		this.emitAfterChange(selectedTab, selectedIndex);
   	},
   	emitBeforeChange (tab, index) {
@@ -64,10 +81,66 @@ export default {
   		this.$emit('afterChange', this, tab, index);
   		this.$tabs.bus.$emit('afterChange', this, tab, index);
   	},
-  	changeToTab(toTab) {
-  		this.tabs.forEach(tab => {
-  			tab.isActive = (tab.href == toTab.href);
-  		});  		
+  	emitTypeChange (typeFrom, typeTo) {
+  		this.$emit('typeChange', this, typeFrom, typeTo);
+  		this.$tabs.bus.$emit('typeChange', this, typeFrom, typeTo);
+  	},
+  	change (toTab) {
+  		if (this.currentType === 'tabs') {
+	  		this.tabs.forEach(tab => {
+	  			tab.isActive = (tab.href == toTab.href);
+	  		});  
+  		} else if (this.currentType === 'accordion') {
+	  		this.tabs.forEach(tab => {
+	  			tab.isActive = (tab.href == toTab.href);
+	  		}); 
+  		}		
+  	},
+  	checkType () {
+  		const oldType = this.currentType,
+  			    newType = this.findType();
+
+  		if (oldType === newType) {
+  			return;
+  		}
+
+  		this.typeChanged(oldType, newType);
+  	},
+  	typeChanged (oldType, newType) {
+  		switch (newType) {
+  			case 'tabs':
+
+  			break;
+
+  			case 'accordion':
+
+  			break;
+
+  			default: 
+  			break;
+  		}
+  		this.currentType = newType;
+  		this.emitTypeChange(oldType, newType);
+  	},
+  	findType () {
+  		return (window.innerWidth > parseInt(this.breakpoint))? 'tabs' : 'accordion';
+  	},
+  	updateTabIndexes () {
+  		this.tabs.forEach((tab, index) => tab.index = index);
+  	},
+  	onApiOpen (componentName, index) {
+  		if (this.name !== componentName) {
+  			return;
+  		}
+
+  		this.onSelect(index);  		
+  	},
+  	onApiSwitchType (componentName, newType) {
+  		if (this.name !== componentName || this.currentType === newType) {
+  			return;
+  		}
+
+  		this.typeChanged(this.type, newType);
   	}
   }
 }
@@ -105,9 +178,7 @@ export default {
 		clear : both;
 	}
 
-	@media only screen and (max-width: 768px) {
-		.tabs__navigation {
-			display : none;
-		}		
+	.tabs__container.tabs__container--accordion .tabs__navigation {
+		display: none;
 	}
 </style>
