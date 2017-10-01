@@ -1,16 +1,26 @@
 <template>
-  <div class="tabs__container" :class="typeClass">
-		<nav class="tabs__navigation">
-			<ul class="tabs__navigation__list">
-				<li v-for="(tab, index) in tabs" :class="{'is-active': tab.isActive}" :index="index">
-					<a @click="onSelect(index, $event)">
-						<span :class="['tabs__navigation__icon', `tabs__navigation__icon--${tab.icon}`]" v-show="tab.icon"></span>
+  <div class="rs-tabs__container" :class="typeClass">
+		<nav class="rs-tabs__navigation">
+			<ul class="rs-tabs__navigation__list">
+				<li 
+          v-for="(tab, index) in tabs" 
+          :class="['rs-tabs__navigation__item', {'is-active': tab.isActive}]" 
+          :index="index"
+        >
+					<a 
+            @click="onSelect(index, $event)"
+            class="rs-tabs__navigation__link"
+          >
+						<span 
+              :class="['rs-tabs__navigation__icon', `rs-tabs__navigation__icon--${tab.icon}`]" 
+              v-show="tab.icon"
+            ></span>
 						{{ tab.name }}
 					</a>
 				</li>
 			</ul>
 		</nav>
-		<div class="tabs__content">
+		<div class="rs-tabs__content">
 			<slot />
 		</div>
   </div>
@@ -38,7 +48,7 @@ export default {
   },
   computed: {
   	typeClass () {
-  		return `tabs__container--${this.currentType}`;
+  		return `rs-tabs__container--${this.currentType}`;
   	},
   	isResponsive () {
   		return !!this.responsive;
@@ -77,7 +87,10 @@ export default {
 
   		const selectedTab = this.tabs[selectedIndex];
 
-  		if ((this.currentType === 'tabs' && selectedTab.isActive) || (this.currentType === 'accordion' && selectedTab.isActive && !this.collapsible)) {
+  		if (
+        (this.currentType === 'tabs' && selectedTab.isActive) || 
+        (this.currentType === 'accordion' && selectedTab.isActive && !this.collapsible)
+      ) {
   			return;
   		}
 
@@ -177,51 +190,65 @@ export default {
 </script>
 
 <style lang="less">
-	.tabs__container {
+	.rs-tabs__container {
 		&--tabs {
-			.tabs__tab__accordion-title {
+			.rs-tabs__tab__accordion-title {
 				display : none;
 			}
 		}
 
 		&--accordion {
-			.tabs__navigation {
+			.rs-tabs__navigation {
 				display : none;
 			}
 		}
 	}
 
-	.tabs__navigation {
-
+	.rs-tabs__navigation {
+    
 	}
 
-	.tabs__navigation__list {
+	.rs-tabs__navigation__list {
 		list-style : none;
 		padding    : 0;
+    margin : 0;
 
-		li {
-			float : left;
-		}
+    &:after {
+      content : '';
+      clear : both;
+      display : table;
+    }
+  }
 
-		li.is-active a {
-			font-size : 20px;
-		}
+  .rs-tabs__navigation__item {
+    float : left;
 
-		a {
-			display : block;
-			padding : 8px;
-			border  : 1px solid #ccc;
-		}
+    &.is-active {
+      .rs-tabs__navigation__link {
+        border : 1px solid #ddd;
+        border-bottom-color : transparent;
+        background : #fff;        
+      }
+    }
+  }
+
+  .rs-tabs__navigation__link {
+      display : block;
+      padding : 10px 20px;
+      margin-bottom : -1px;
+      font-size : 18px;
+      border-radius: 3px 3px 0 0;
+      border : 1px solid transparent;    
+  }
+
+	.rs-tabs__navigation__icon {
+    width      : 10px;
+    height     : 10px;
+    display    : inline-block;
+    background : blue;
 	}
 
-	.tabs__navigation__icon {
-		width : 10px;
-		height : 10px;
-		display : inline-block;
-		background : blue;
-	}
-
-	.tabs__content {
+	.rs-tabs__content {
 		clear : both;
 	}
 

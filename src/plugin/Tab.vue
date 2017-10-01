@@ -1,16 +1,17 @@
 <template>
-  <div class="tabs__tab" :class="{'is-active': isActive}">
+  <div :class="['rs-tabs__tab', {'is-active': isActive}]">
   	<a
-  		class="tabs__tab__accordion-title" 
+  		class="rs-tabs__tab__accordion-title" 
       @click="selectAccordion($event)" 
   	>
-      <span :class="['tabs__navigation__icon', `tabs__navigation__icon--${icon}`]" v-show="icon"></span>
+      <span 
+        :class="['rs-tabs__navigation__icon', `rs-tabs__navigation__icon--${icon}`]"
+        v-show="icon"
+      ></span>
   		{{ name }}
   	</a>
-  	<div class="tabs__tab__content" v-show="isActive">
-      <slot name="header" />
+  	<div class="rs-tabs__tab__content" v-show="isActive">
   		<slot />
-      <slot name="footer" />
   	</div>
   </div>
 </template>
@@ -47,12 +48,14 @@ export default {
 
 <style lang="less">
 
-	.tabs__tab__content {
-		padding : 20px;
-		border: 1px solid #ccc;
+	.rs-tabs__tab__content {
+    padding : 20px;
+    border  : 1px solid #ddd;
+    //border-top : 0;
+    border-radius : 3px;
 	}
 
-	.tabs__tab__accordion-title.is-active {
+	.rs-tabs__tab__accordion-title.is-active {
 		font-size : 20px;
 	}
   
