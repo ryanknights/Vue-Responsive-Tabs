@@ -3,7 +3,7 @@
 import Vue from 'vue'
 import App from './App'
 
-import TabsPlugin from './plugin/index';
+import TabsPlugin from '../../src/index';
 
 Vue.config.productionTip = false
 
